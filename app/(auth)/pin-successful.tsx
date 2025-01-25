@@ -8,7 +8,7 @@ const PinSuccessful = () => {
     <View style={styles.container}>
       <View style={styles.iconContainer}>
         <Image 
-          source={require('../../assets/images/Group 144.png')} 
+          source={require('../../assets/images/Group144.png')} 
           style={styles.successIcon} 
         />
       </View>

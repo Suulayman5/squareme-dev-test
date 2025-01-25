@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'https://demo-squareme.onrender.com/',
+  baseURL: 'https://demo-squareme.onrender.com',
   timeout: 10000,  // Request timeout (optional)
   headers: {
     'Content-Type': 'application/json',

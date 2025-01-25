@@ -6,6 +6,11 @@ import {
   TouchableOpacity,
   StyleSheet,
   Alert,
+  SafeAreaView,
+  Keyboard,
+  Platform,
+  KeyboardAvoidingView,
+  TouchableWithoutFeedback,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import api from '../services/api';
@@ -16,6 +21,27 @@ export default function Otp() {
   const [otp, setOtp] = useState(['', '', '', '', '']);
   const [timer, setTimer] = useState(59);
   const inputRefs = useRef<(TextInput | null)[]>([]);
+  const [keyboardVisible, setKeyboardVisible] = useState(false);
+
+  useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener(
+      'keyboardDidShow',
+      () => {
+        setKeyboardVisible(true);
+      }
+    );
+    const keyboardDidHideListener = Keyboard.addListener(
+      'keyboardDidHide',
+      () => {
+        setKeyboardVisible(false);
+      }
+    );
+
+    return () => {
+      keyboardDidHideListener.remove();
+      keyboardDidShowListener.remove();
+    };
+  }, []);
 
   useEffect(() => {
     if (timer > 0) {
@@ -47,11 +73,13 @@ export default function Otp() {
     }
   };
 
-  const verifyOtp = async (code: string) => {
+  const verifyOtp = async (code: string, ) => {
     try {
-      const response = await api.post('/user/verify-otp', { otp: code });
+      const response = await api.post('/user/verify-otp/', { otp });
+      console.log("Sending OTP:", code); // Debugging
       if (response.status === 200) {
         router.push('/successful');
+        console.log(response.data);
       }
     } catch (error) {
       Alert.alert('Error', 'Invalid OTP. Please try again.');
@@ -59,63 +87,80 @@ export default function Otp() {
   };
 
   return (
-    <View style={styles.container}>
-      <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
-        <Ionicons name="arrow-back" size={24} color="#000" />
-      </TouchableOpacity>
-      <Text style={styles.title}>Verify Phone Number</Text>
-      <Text style={styles.subtitle}>
-        Please input the five-digit code that was sent to your phone number
-      </Text>
+    <SafeAreaView style={styles.safeArea}>
+      <KeyboardAvoidingView
+        style={styles.container}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      >
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <View style={styles.innerContainer}>
+            <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
+              <Ionicons name="arrow-back" size={24} color="#000" />
+            </TouchableOpacity>
+            <Text style={styles.title}>Verify Phone Number</Text>
+            <Text style={styles.subtitle}>
+              Please input the five-digit code that was sent to your phone number
+            </Text>
 
-      <View style={styles.codeInputContainer}>
-        {otp.map((digit, index) => (
-          <TextInput
-            key={index}
-            ref={(el) => (inputRefs.current[index] = el)}
-            style={styles.codeInput}
-            keyboardType="numeric"
-            maxLength={1}
-            value={digit}
-            onChangeText={(value) => handleOtpChange(value, index)}
-            onKeyPress={({ nativeEvent }) => {
-              if (nativeEvent.key === 'Backspace' && index > 0 && !digit) {
-                inputRefs.current[index - 1]?.focus();
-              }
-            }}
-          />
-        ))}
-      </View>
+            <View style={[styles.codeInputContainer, keyboardVisible && styles.codeInputContainerWithKeyboard]}>
+              {otp.map((digit, index) => (
+                <TextInput
+                  key={index}
+                  ref={(el) => (inputRefs.current[index] = el)}
+                  style={styles.codeInput}
+                  keyboardType="numeric"
+                  maxLength={1}
+                  value={digit}
+                  onChangeText={(value) => handleOtpChange(value, index)}
+                  onKeyPress={({ nativeEvent }) => {
+                    if (nativeEvent.key === 'Backspace' && index > 0 && !digit) {
+                      inputRefs.current[index - 1]?.focus();
+                    }
+                  }}
+                />
+              ))}
+            </View>
 
-      <Text style={styles.timer}>{timer > 0 ? formatTime(timer) : ''}</Text>
+            <Text style={styles.timer}>{timer > 0 ? formatTime(timer) : ''}</Text>
 
-      <Text style={styles.helpText}>
-        Having trouble receiving SMS?{' '}
-        <Text style={styles.resendText} onPress={() => setTimer(59)}>
-          Resend
-        </Text>
-        {'\n'}
-        Or try other options below
-      </Text>
+            <Text style={styles.helpText}>
+              Having trouble receiving SMS?{' '}
+              <Text style={styles.resendText} onPress={() => {setTimer(59); }}>
+                Resend
+              </Text>
+              {'\n'}
+              Or try other options below
+            </Text>
 
-      <View style={styles.optionsContainer}>
-        <TouchableOpacity style={[styles.optionButton, styles.callButton]}>
-          <Text style={styles.optionText}>Call me</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={[styles.optionButton, styles.whatsappButton]}>
-          <Text style={styles.optionText}>WhatsApp</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
+            <View style={styles.optionsContainer}>
+              <TouchableOpacity style={[styles.optionButton, styles.callButton]}>
+                <Text style={styles.optionText}>Call me</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={[styles.optionButton, styles.whatsappButton]}>
+                <Text style={styles.optionText}>WhatsApp</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </TouchableWithoutFeedback>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: '#ffffff',
+    marginTop: 40,
+
+  },
   container: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
     paddingHorizontal: 24,
     paddingVertical: 20,
+  },
+  innerContainer: {
+    flex: 1,
   },
   backButton: {
     marginBottom: 20,
@@ -133,12 +178,14 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     lineHeight: 20,
     fontFamily: 'DM Sans',
-
   },
   codeInputContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginBottom: 10,
+  },
+  codeInputContainerWithKeyboard: {
+    marginBottom: 50, // Adjust the margin when the keyboard is visible
   },
   codeInput: {
     width: 50,

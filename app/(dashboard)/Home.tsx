@@ -1,11 +1,11 @@
+import { useRouter } from 'expo-router';
 import React from 'react';
 import { View, Text, Image, Pressable, StyleSheet, SafeAreaView } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
 
 const HomeScreen = () => {
+  const router = useRouter();
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.gradient}>
         <View style={styles.header}>
             <View style={styles.profile}>
             <Image 
@@ -27,14 +27,13 @@ const HomeScreen = () => {
         <Text style={styles.walletAmount}>₦ XXXXX</Text>
 
         <View style={styles.buttonContainer}>
-            <Pressable style={styles.fundButton}>
+            <Pressable style={styles.fundButton} onPress={() => router.push('./wallet-keypad')}>
                 <Text style={styles.fundText}>Fund</Text>
             </Pressable>
-            <Pressable style={styles.withdrawButton}>
+            <Pressable style={styles.withdrawButton} onPress={() => router.push('./wallet-keypad')}>
                 <Text style={styles.withdrawText}>Withdraw</Text>
             </Pressable>
         </View>
-      </View>
       <Text style={styles.quickAccessTitle}>Quick Access</Text>
       <View style={styles.quickAccessContainer}>
         <View style={styles.accessItem}>
@@ -62,7 +61,9 @@ const HomeScreen = () => {
 
       <View style={styles.bottomNav}>
       <Image source={require('../../assets/images/home-2.png')}/>
-      <Image source={require('../../assets/images/catrgory.png')}/>
+      <Pressable onPress={() => router.push('./wallet-keypad')}>
+        <Image source={require('../../assets/images/category.png')}/>
+      </Pressable>
       <Image source={require('../../assets/images/profile.png')}/>
       </View>
     </SafeAreaView>
@@ -75,9 +76,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#F8F9FD',
     paddingHorizontal: 20,
   },
-  gradient: {
-    backgroundColor: 'inear-gradient(180deg, rgba(0, 198, 251, 0.2) 0%, rgba(0, 198, 251, 0) 100%)'
-  },
+  
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -116,6 +115,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#6C6C6C',
     marginTop: 30,
+    marginBottom: 10,
   },
   walletAmount: {
     textAlign: 'center',
@@ -123,6 +123,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#000A4A',
     marginVertical: 10,
+    marginBottom: 40,
   },
   buttonContainer: {
     flexDirection: 'row',

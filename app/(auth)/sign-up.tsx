@@ -6,18 +6,28 @@ import api from '../services/api';
 
 export default function Signup() {
   const router = useRouter()
+  const [phoneNumber, setPhoneNumber] = useState('');
+
 
   const handleSignUp = async () => {
-    try {
-      const response = await api.post('/user/create')
-      if (response.status === 200) {
-        router.push('/otp')
-      }
-    } catch (error) {
-      console.error(error)
-      Alert.alert('Error signing up')
+    if (!phoneNumber) {
+      Alert.alert('Error', 'Phone number is required');
+      return;
     }
-  }
+
+    // Combine the country code with the phone number
+    const fullPhoneNumber = `234${phoneNumber}`;
+
+    try {
+      const response = await api.post('/user/create', { phoneNumber: fullPhoneNumber });
+      if (response.status === 200) {
+        router.push('/otp');
+      }
+    } catch (error: any) {
+      console.error('API Error:', error.response?.data || error.message);
+      Alert.alert('Error signing up', error.response?.data?.message || 'An error occurred');
+    }
+  };
   return (
     <View style={styles.container}>
       <TouchableOpacity style={styles.backButton} onPress={()=> router.back()}>
@@ -38,10 +48,13 @@ export default function Signup() {
           <Ionicons name="chevron-down" size={16} color="#000" />
         </View>
         <TextInput
-          style={styles.phoneInput}
-          placeholder="Phone Number"
-          keyboardType="phone-pad"
-        />
+        style={styles.phoneInput}
+        placeholder="Phone Number"
+        keyboardType="phone-pad"
+        value={phoneNumber}
+        onChangeText={setPhoneNumber}
+      />
+      
       </View>
 
       <TouchableOpacity style={styles.referralContainer}>
@@ -64,9 +77,10 @@ export default function Signup() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#ffffff',
     paddingHorizontal: 24,
     paddingVertical: 20,
+    marginTop: 40,
   },
   backButton: {
     marginBottom: 20,
