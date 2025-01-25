@@ -20,20 +20,18 @@ export default function Signup() {
   }
   return (
     <View style={styles.container}>
-      {/* Header */}
       <TouchableOpacity style={styles.backButton} onPress={()=> router.back()}>
         <Ionicons name="arrow-back" size={24} color="#000" />
       </TouchableOpacity>
       <Text style={styles.title}>Enter Your Phone Number</Text>
       <Text style={styles.subtitle}>
-        We’ll send an SMS with a code to verify your phone number
+        We'll send an SMS with a code to verify your phone number
       </Text>
 
-      {/* Phone Number Input */}
       <View style={styles.phoneInputContainer}>
         <View style={styles.countryCode}>
           <Image
-            source={{ uri: 'https://flagcdn.com/w320/ng.png' }} // Replace with a Nigerian flag image
+            source={{ uri: 'https://flagcdn.com/w320/ng.png' }}
             style={styles.flag}
           />
           <Text style={styles.countryText}>+234</Text>
@@ -46,18 +44,15 @@ export default function Signup() {
         />
       </View>
 
-      {/* Referral Input */}
       <TouchableOpacity style={styles.referralContainer}>
         <Text style={styles.referralText}>Have a referral ID?</Text>
         <Ionicons name="gift-outline" size={20} color="#A020F0" />
       </TouchableOpacity>
 
-      {/* Proceed Button */}
       <TouchableOpacity style={styles.proceedButton} onPress={handleSignUp}>
         <Text style={styles.proceedText}>Proceed</Text>
       </TouchableOpacity>
 
-      {/* Footer */}
       <Text style={styles.footerText}>
         Already have an account?{' '}
         <Text style={styles.loginLink}>Login here</Text>

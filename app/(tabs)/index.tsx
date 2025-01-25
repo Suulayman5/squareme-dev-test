@@ -2,13 +2,12 @@ import { Link } from 'expo-router';
 import { StyleSheet, Text, View, ImageBackground, TouchableOpacity, Image } from 'react-native';
 import { useState } from 'react';
 import React from 'react';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
 const Index = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const handleNext = () => {
-    setCurrentIndex((prevIndex) => (prevIndex + 1) % 3); // Increment index, loop back to 0 after 2
+    setCurrentIndex((prevIndex) => (prevIndex + 1) % 3); 
   };
 
   const renderView = () => {
@@ -16,7 +15,7 @@ const Index = () => {
       case 0:
         return (
           <ImageBackground
-            source={require('../../assets/images/image1.png')} // Image for the first screen
+            source={require('../../assets/images/image1.png')} 
             style={styles.backgroundImage}
           >
             <View style={styles.container}>
@@ -46,7 +45,7 @@ const Index = () => {
       case 1:
         return (
           <ImageBackground
-            source={require('../../assets/images/image2.png')} // Image for the second screen
+            source={require('../../assets/images/image2.png')} 
             style={styles.backgroundImage}
           >
             <View style={styles.container}>
@@ -76,7 +75,7 @@ const Index = () => {
       case 2:
         return (
           <ImageBackground
-            source={require('../../assets/images/image3.png')} // Image for the third screen
+            source={require('../../assets/images/image3.png')} 
             style={styles.backgroundImage}
           >
             <View style={styles.container}>

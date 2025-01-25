@@ -5,7 +5,6 @@ import { Ionicons } from '@expo/vector-icons';
 const HomeScreen = () => {
   return (
     <SafeAreaView style={styles.container}>
-      {/* Header */}
       <View style={styles.gradient}>
         <View style={styles.header}>
             <View style={styles.profile}>
@@ -24,11 +23,9 @@ const HomeScreen = () => {
             </View>
         </View>
 
-        {/* Wallet Balance */}
         <Text style={styles.walletText}>Wallet Balance</Text>
         <Text style={styles.walletAmount}>₦ XXXXX</Text>
 
-        {/* Fund and Withdraw Buttons */}
         <View style={styles.buttonContainer}>
             <Pressable style={styles.fundButton}>
                 <Text style={styles.fundText}>Fund</Text>
@@ -38,7 +35,6 @@ const HomeScreen = () => {
             </Pressable>
         </View>
       </View>
-      {/* Quick Access */}
       <Text style={styles.quickAccessTitle}>Quick Access</Text>
       <View style={styles.quickAccessContainer}>
         <View style={styles.accessItem}>
@@ -55,7 +51,6 @@ const HomeScreen = () => {
         </View>
       </View>
 
-      {/* Recent Transactions */}
       <Text style={styles.recentTitle}>Recent Transactions</Text>
       <View style={styles.noTransaction}>
       <Image source={require('../../assets/images/note.png')}/>
@@ -65,12 +60,11 @@ const HomeScreen = () => {
         </Text>
       </View>
 
-      {/* Bottom Navigation */}
-      {/* <View style={styles.bottomNav}>
-        <Ionicons name="home" size={24} color="black" />
-        <Ionicons name="grid-outline" size={24} color="gray" />
-        <Ionicons name="person-outline" size={24} color="gray" />
-      </View> */}
+      <View style={styles.bottomNav}>
+      <Image source={require('../../assets/images/home-2.png')}/>
+      <Image source={require('../../assets/images/catrgory.png')}/>
+      <Image source={require('../../assets/images/profile.png')}/>
+      </View>
     </SafeAreaView>
   );
 };

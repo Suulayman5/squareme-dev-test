@@ -17,7 +17,6 @@ export default function Otp() {
   const [timer, setTimer] = useState(59);
   const inputRefs = useRef<(TextInput | null)[]>([]);
 
-  // Countdown timer
   useEffect(() => {
     if (timer > 0) {
       const countdown = setInterval(() => {
@@ -33,26 +32,21 @@ export default function Otp() {
     return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
   };
 
-  // Handle OTP input changes
   const handleOtpChange = (value: string, index: number) => {
     const newOtp = [...otp];
     newOtp[index] = value;
 
-    // Update OTP state
     setOtp(newOtp);
 
-    // Move to the next input if a digit is entered
     if (value && index < otp.length - 1) {
       inputRefs.current[index + 1]?.focus();
     }
 
-    // Trigger verification when all fields are filled
     if (newOtp.every((digit) => digit !== '')) {
       verifyOtp(newOtp.join(''));
     }
   };
 
-  // Verify OTP function
   const verifyOtp = async (code: string) => {
     try {
       const response = await api.post('/user/verify-otp', { otp: code });
@@ -66,7 +60,6 @@ export default function Otp() {
 
   return (
     <View style={styles.container}>
-      {/* Header */}
       <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
         <Ionicons name="arrow-back" size={24} color="#000" />
       </TouchableOpacity>
@@ -75,7 +68,6 @@ export default function Otp() {
         Please input the five-digit code that was sent to your phone number
       </Text>
 
-      {/* OTP Input */}
       <View style={styles.codeInputContainer}>
         {otp.map((digit, index) => (
           <TextInput
@@ -95,10 +87,8 @@ export default function Otp() {
         ))}
       </View>
 
-      {/* Timer */}
       <Text style={styles.timer}>{timer > 0 ? formatTime(timer) : ''}</Text>
 
-      {/* Resend and Help */}
       <Text style={styles.helpText}>
         Having trouble receiving SMS?{' '}
         <Text style={styles.resendText} onPress={() => setTimer(59)}>
@@ -108,7 +98,6 @@ export default function Otp() {
         Or try other options below
       </Text>
 
-      {/* Call and WhatsApp Buttons */}
       <View style={styles.optionsContainer}>
         <TouchableOpacity style={[styles.optionButton, styles.callButton]}>
           <Text style={styles.optionText}>Call me</Text>

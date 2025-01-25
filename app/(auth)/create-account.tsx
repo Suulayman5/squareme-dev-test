@@ -31,10 +31,10 @@ export default createAccount
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#000A4A',  // Ensures full-screen background
+    backgroundColor: '#000A4A', 
   },
   container : {
-    backgroundColor: '#000A4A', // Navy blue background
+    backgroundColor: '#000A4A', 
     flex: 1,
     height: '100%', 
     alignItems: 'center',
@@ -42,12 +42,12 @@ const styles = StyleSheet.create({
     paddingVertical: 50,
   },
   logoContainer: {
-    flexGrow: 1,  // Centers the logo vertically
+    flexGrow: 1, 
     justifyContent: 'center',
     alignItems: 'center',
   },
   logo: {
-    width: 250, // Adjust based on the logo size
+    width: 250, 
     height: 60,
     resizeMode: 'contain',
   },
