@@ -143,7 +143,7 @@ const styles = StyleSheet.create({
     fontFamily: "Poppins",
   },
   keypadGrid: {
-    width: "80%",
+    width: "70%",
     flexDirection: "row",
     flexWrap: "wrap",
     justifyContent: "space-between",

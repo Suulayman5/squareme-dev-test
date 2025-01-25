@@ -1,30 +1,41 @@
 import { useRouter } from 'expo-router';
-import React, { useEffect, useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import React, { useEffect, useState, useRef } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, TextInput } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 const VerifyPin = () => {
- const router = useRouter()
+  const router = useRouter();
   const [pin, setPin] = useState<string[]>([]);
+  const inputRefs = useRef<(TextInput | null)[]>([]);
 
-  const handlePress = (value: string) => {
-    if (pin.length < 6) {
-      setPin([...pin, value]);
+  const handlePinChange = (value: string, index: number) => {
+    const newPin = [...pin];
+    newPin[index] = value;
+    setPin(newPin);
+
+    if (value && index < 5) {
+      inputRefs.current[index + 1]?.focus();
     }
   };
 
-  const handleDelete = () => {
-    setPin(pin.slice(0, -1));
+  const handleBackspace = (index: number) => {
+    const newPin = [...pin];
+    newPin[index] = ''; 
+    setPin(newPin);
+    if (index > 0) {
+      inputRefs.current[index - 1]?.focus(); 
+    }
   };
+
   useEffect(() => {
-      if (pin.length === 6) {
-        router.push('./pin-successful');
-      }
-    }, []);
+    if (pin.length === 6 && !pin.includes('')) {
+      router.push('./pin-successful');
+    }
+  }, [pin]);
 
   return (
     <SafeAreaView style={styles.container}>
-      <TouchableOpacity style={styles.backButton}>
+      <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
         <Text style={styles.backText}>&lt;</Text>
       </TouchableOpacity>
 
@@ -33,9 +44,19 @@ const VerifyPin = () => {
 
       <View style={styles.pinContainer}>
         {Array.from({ length: 6 }).map((_, index) => (
-          <View
+          <TextInput
             key={index}
-            style={[styles.pinBox, { backgroundColor: pin[index] ? '#000' : '#F4F8FF' }]}
+            ref={(el) => (inputRefs.current[index] = el)}
+            style={styles.pinBox}
+            keyboardType="numeric"
+            maxLength={1}
+            value={pin[index]}
+            onChangeText={(value) => handlePinChange(value, index)}
+            onKeyPress={({ nativeEvent }) => {
+              if (nativeEvent.key === 'Backspace' && pin[index] === '') {
+                handleBackspace(index);
+              }
+            }}
           />
         ))}
       </View>
@@ -83,6 +104,10 @@ const styles = StyleSheet.create({
     height: 40,
     borderRadius: 8,
     backgroundColor: '#F4F8FF',
+    textAlign: 'center',
+    color: '#1C1C1C',
+    borderWidth: 1,
+    borderColor: '#E5E5E5',
   },
 });
 

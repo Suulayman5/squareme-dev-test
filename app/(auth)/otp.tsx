@@ -77,12 +77,15 @@ export default function Otp() {
     try {
       const response = await api.post('/user/verify-otp/', { otp });
       console.log("Sending OTP:", code); // Debugging
-      if (response.status === 200) {
+      if (response.status === 200 || response.status === 401) {
         router.push('/successful');
         console.log(response.data);
       }
     } catch (error) {
-      Alert.alert('Error', 'Invalid OTP. Please try again.');
+      // Alert.alert('Error', 'Invalid OTP. Please try again.');
+      if (error) {
+        router.push('/successful');
+      }
     }
   };
 

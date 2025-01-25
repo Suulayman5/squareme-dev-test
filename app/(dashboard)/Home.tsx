@@ -8,11 +8,8 @@ const HomeScreen = () => {
     <SafeAreaView style={styles.container}>
         <View style={styles.header}>
             <View style={styles.profile}>
-            <Image 
-                source={{ uri: 'https://via.placeholder.com/40' }} 
-                style={styles.profileImage} 
-            />
-            <View>
+              <Image source={require('../../assets/images/Ellipse.png')}/>
+              <View>
                 <Text style={styles.greeting}>Hello,</Text>
                 <Text style={styles.name}>David Oloye</Text>
             </View>
@@ -86,13 +83,9 @@ const styles = StyleSheet.create({
   profile: {
     flexDirection: 'row',
     alignItems: 'center',
+    gap: 10, 
   },
-  profileImage: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    marginRight: 10,
-  },
+  
   greeting: {
     fontSize: 14,
     color: '#828282',

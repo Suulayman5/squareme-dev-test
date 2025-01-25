@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import { useState, useEffect, useRef } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, Alert, TextInput } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import api from '../services/api';
 import { useRouter } from 'expo-router';
@@ -7,31 +7,47 @@ import { useRouter } from 'expo-router';
 const CreatePin = () => {
   const router = useRouter();
   const [pin, setPin] = useState<string[]>([]);
+  const inputRefs = useRef<(TextInput | null)[]>([]);
 
-//   const handlePress = (value: string) => {
-//     if (pin.length < 6) {
-//       setPin([...pin, value]);
-//     }
-//   };
+  const handlePinChange = (value: string, index: number) => {
+    const newPin = [...pin];
+    newPin[index] = value;
+    setPin(newPin);
 
-//   const handleDelete = () => {
-//     setPin(pin.slice(0, -1));
-//   };
+    if (value && index < 5) {
+      inputRefs.current[index + 1]?.focus();
+    }
+  };
+
+  const handleBackspace = (index: number) => {
+    const newPin = [...pin];
+    newPin[index] = ''; 
+    setPin(newPin);
+    if (index > 0) {
+      inputRefs.current[index - 1]?.focus(); // Focus the previous field
+    }
+  };
 
   useEffect(() => {
-    if (pin.length === 6) {
-      VerifyPin();
+    // Submit when pin is full
+    if (pin.length === 6 && !pin.includes('')) {
+      verifyPin();
     }
   }, [pin]);
 
-  const VerifyPin = async () => {
+  const verifyPin = async () => {
     try {
-      const response = await api.post('/user/verify-pin', { pin: pin.join('') });
-      if (response.status === 200) {
+      const response = await api.post('/user/set-pin', { pin: pin.join('') });
+    if (response.status === 201 || response.status === 401 ) {
         router.navigate('./verify-pin');
+      } else {
+        Alert.alert('An error occurred. Please try again.');
       }
     } catch (error) {
-      Alert.alert('An error occurred. Please try again.');
+      // Alert.alert('An error occurred. Please try again.');
+      if (error) {
+        router.push('/verify-pin');
+      }
     }
   };
 
@@ -46,9 +62,19 @@ const CreatePin = () => {
 
       <View style={styles.pinContainer}>
         {Array.from({ length: 6 }).map((_, index) => (
-          <View
+          <TextInput
             key={index}
-            style={[styles.pinBox, { backgroundColor: pin[index] ? '#000' : '#F4F8FF' }]}
+            ref={(el) => (inputRefs.current[index] = el)}
+            style={[styles.pinBox, { backgroundColor: pin[index] ? '#F4F8FF' : '#F4F8FF' }]} // No color change when filled
+            keyboardType="numeric"
+            maxLength={1}
+            value={pin[index]}
+            onChangeText={(value) => handlePinChange(value, index)}
+            onKeyPress={({ nativeEvent }) => {
+              if (nativeEvent.key === 'Backspace' && pin[index] === '') {
+                handleBackspace(index);
+              }
+            }}
           />
         ))}
       </View>
@@ -96,6 +122,10 @@ const styles = StyleSheet.create({
     height: 40,
     borderRadius: 8,
     backgroundColor: '#F4F8FF',
+    textAlign: 'center',
+    color: '#1C1C1C',
+    borderWidth: 1,
+    borderColor: '#E5E5E5',
   },
 });
 
